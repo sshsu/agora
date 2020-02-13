@@ -1,6 +1,8 @@
 #pragma once
 #include <cstdint>
 #include <string>
+#include "AudioFrameObserver.h"
+
 
 namespace agora {
     namespace rtc {
@@ -71,9 +73,14 @@ class AGEngine
 
         bool release();
 
+        bool AGEngine::enableAudioRecord();
+
         IRtcEngine* getRtcEngine() { return m_agoraEngine;} 
 
     private:
         IRtcEngine*     m_agoraEngine;
         RtcEngineParameters* m_parameters;
+
+        agora::util::AutoPtr<agora::media::IMediaEngine> mediaEngine;
+        AudioFrameObserver audioFrameObserver;
 };

@@ -3,11 +3,14 @@
 
 #include "IAgoraRtcEngine.h"
 #include "AGEngine.h"
+#include "AudioFrameObserver.h"
 #include <iostream>
 
 AGEngine::AGEngine(IRtcEngineEventHandler* handler, const char* appId)
 {
     m_agoraEngine = createAgoraRtcEngine(); 
+    //initlize 
+    mediaEngine.queryInterface(m_agoraEngine, agora::AGORA_IID_MEDIA_ENGINE);
     RtcEngineContext ctx;
     ctx.eventHandler = handler;
     ctx.appId = appId;
@@ -274,6 +277,24 @@ bool AGEngine::release()
         delete m_parameters;
         m_parameters = NULL;
     }
+
+    if(audioFd){
+        fclose(audioFd);
+        audioFd = NULL;
+    }
+
+    return true;
+}
+
+
+
+bool AGEngine::enableAudioRecord()
+{}
+	int ret = mediaEngine->registerAudioFrameObserver(&audioFrameObserver);
+    if (ret != 0) {
+		printf("AgoraEngine registerAudioFrameObserver failed: %d\n", ret);
+		return -1;
+	}
 
     return true;
 }
