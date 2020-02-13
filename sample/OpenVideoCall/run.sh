@@ -1,8 +1,8 @@
 #!/bin/bash
 
-./openVideoCall  --appId c7a4cc481d194849b8095b736e112b1e\
-                 --uid  202\
-                 --channel demoChannel \
+./openVideoCall  --appId fe4b413a89e2440296df19089e518041\
+                 --uid  201\
+                 --channel w123\
                  --dynamicKey 0 \
                  --channelProfile 1 \
                  --audioProfile 0 \
