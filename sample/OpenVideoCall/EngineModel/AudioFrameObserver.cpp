@@ -12,7 +12,8 @@ bool AudioFrameObserver::onPlaybackAudioFrame(AudioFrame& audioFrame)
 {
 	printf("%s: samples=%d, channel=%d, fs=%d\n", __FUNCTION__, audioFrame.samples, audioFrame.channels, audioFrame.samplesPerSec);
     FILE *fd = fopen("record.pcm", "ab+");
-    fputs(audioFrame.buffer, fd);
+    fwrite(audioFrame.buffer, audioFrame.samples * audioFrame.channels *  audioFrame.bytesPerSample,1, fd);
+    //fputs((char *)audioFrame.buffer, fd);
     fclose(fd);
 	return true;
 }
