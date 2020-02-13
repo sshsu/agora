@@ -10,12 +10,11 @@ AGEngine::AGEngine(IRtcEngineEventHandler* handler, const char* appId)
 {
     m_agoraEngine = createAgoraRtcEngine(); 
     //initlize 
-    mediaEngine.queryInterface(m_agoraEngine, agora::AGORA_IID_MEDIA_ENGINE);
     RtcEngineContext ctx;
     ctx.eventHandler = handler;
     ctx.appId = appId;
     m_agoraEngine->initialize(ctx);
-
+    mediaEngine.queryInterface(m_agoraEngine, agora::AGORA_IID_MEDIA_ENGINE);
     m_parameters = new RtcEngineParameters(m_agoraEngine);
 }
 
