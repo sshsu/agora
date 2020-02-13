@@ -73,7 +73,7 @@ class AGEngine
 
         bool release();
 
-        bool AGEngine::enableAudioRecord();
+        bool enableAudioRecord();
 
         IRtcEngine* getRtcEngine() { return m_agoraEngine;} 
 
