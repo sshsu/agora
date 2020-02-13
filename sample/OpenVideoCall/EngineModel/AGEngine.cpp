@@ -4,6 +4,7 @@
 #include "IAgoraRtcEngine.h"
 #include "AGEngine.h"
 #include "AudioFrameObserver.h"
+#include "IAgoraMediaEngine.h"
 #include <iostream>
 
 AGEngine::AGEngine(IRtcEngineEventHandler* handler, const char* appId)
@@ -16,6 +17,8 @@ AGEngine::AGEngine(IRtcEngineEventHandler* handler, const char* appId)
     m_agoraEngine->initialize(ctx);
     mediaEngine.queryInterface(m_agoraEngine, agora::AGORA_IID_MEDIA_ENGINE);
     m_parameters = new RtcEngineParameters(m_agoraEngine);
+
+    
 }
 
 AGEngine::~AGEngine()
@@ -277,6 +280,13 @@ bool AGEngine::release()
         m_parameters = NULL;
     }
 
+    if(pushAudioThread){
+        pushAudioThreadFinish = 1;
+        pushAudioThread->join();
+        delete pushAudioThread;
+        pushAudioThread = NULL;
+    }
+
     return true;
 }
 
@@ -290,5 +300,51 @@ bool AGEngine::enableAudioRecord()
 		return false;
 	}
     return true;
+}
+
+void AGEngine::pushAudioFrame(){
+
+    FILE *fd = fopen("inputAudio.pcm", "rb");
+
+    agora::media::IAudioFrameObserver::AudioFrame frame;
+
+    int nSampleRate = 32000;
+    int nChannels = 1;
+
+
+    frame.bytesPerSample = 2;
+    frame.channels = nChannels;
+    frame.renderTimeMs = 10;
+    frame.samples = nSampleRate / 100;
+    frame.samplesPerSec = nSampleRate;
+    frame.type = agora::media::IAudioFrameObserver::AUDIO_FRAME_TYPE::FRAME_TYPE_PCM16;
+
+
+    int bufferSize = frame.samples * frame.bytesPerSample;
+    char *buffer = new char[bufferSize + 1];
+    while(!pushAudioThreadFinish){
+        if(feof(fd))
+             fseek(fd, 0, SEEK_SET);
+
+        fread(buffer, 1, bufferSize, fd );
+        frame.buffer = buffer;
+
+         mediaEngine->pushAudioFrame(agora::media::MEDIA_SOURCE_TYPE::AUDIO_RECORDING_SOURCE, &frame, true);
+    }
+
+    m_parameters->setExternalAudioSource(false, nSampleRate, nChannels);
+    fclose(fd);
+    delete buffer;
+}
+
+
+bool AGEngine::setExternalAudioSource()
+{
+    int nSampleRate = 32000;
+    int nChannels = 1;
+    m_parameters->setExternalAudioSource(true, nSampleRate, nChannels);
+
+    std::thread *pushAudioThread = new std::thread(setExternalAudioSource);
+
 }
 

@@ -1,6 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <string>
+#include <thread>
 #include "AudioFrameObserver.h"
 
 
@@ -75,12 +76,21 @@ class AGEngine
 
         bool enableAudioRecord();
 
+        bool setExternalAudioSource();
+
+        void pushAudioFrame();
+
         IRtcEngine* getRtcEngine() { return m_agoraEngine;} 
 
     private:
         IRtcEngine*     m_agoraEngine;
         RtcEngineParameters* m_parameters;
 
+
         agora::util::AutoPtr<agora::media::IMediaEngine> mediaEngine;
         AudioFrameObserver audioFrameObserver;
+
+
+        std::thread *pushAudioThread = NULL;
+        int pushAudioThreadFinish = 0;
 };
