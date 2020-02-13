@@ -278,24 +278,18 @@ bool AGEngine::release()
         m_parameters = NULL;
     }
 
-    if(audioFd){
-        fclose(audioFd);
-        audioFd = NULL;
-    }
-
     return true;
 }
 
 
 
 bool AGEngine::enableAudioRecord()
-{}
+{
 	int ret = mediaEngine->registerAudioFrameObserver(&audioFrameObserver);
     if (ret != 0) {
 		printf("AgoraEngine registerAudioFrameObserver failed: %d\n", ret);
-		return -1;
+		return false;
 	}
-
     return true;
 }
 
