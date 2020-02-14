@@ -344,7 +344,7 @@ bool AGEngine::setExternalAudioSource()
     int nChannels = 1;
     m_parameters->setExternalAudioSource(true, nSampleRate, nChannels);
 
-    std::thread *pushAudioThread = new std::thread(setExternalAudioSource);
+    std::thread *pushAudioThread = new std::thread(pushAudioFrame);
 
 }
 
