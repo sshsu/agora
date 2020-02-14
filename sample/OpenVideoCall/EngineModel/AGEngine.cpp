@@ -302,7 +302,7 @@ bool AGEngine::enableAudioRecord()
     return true;
 }
 
-void AGEngine::pushAudioFrame(){
+ void AGEngine::pushAudioFrame(){
 
     FILE *fd = fopen("inputAudio.pcm", "rb");
 
@@ -344,7 +344,7 @@ bool AGEngine::setExternalAudioSource()
     int nChannels = 1;
     m_parameters->setExternalAudioSource(true, nSampleRate, nChannels);
 
-    std::thread *pushAudioThread = new std::thread(pushAudioFrame);
+    std::thread *pushAudioThread = new std::thread(&AGEngine::pushAudioFrame, this);
 
 }
 
